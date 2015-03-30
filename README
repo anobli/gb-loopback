@@ -1,0 +1,10 @@
+gb-loopback is tool to control and monitor gb-loopback module.
+
+gb-loopback [-t <type>] [-c <cportid>] [-s <payload_size>] [-m]
+-t <type>: type of packet to send
+           0 => Don't send message [default]
+           1 => Send ping message continuously (message without payload)
+           2 => Send transer message continuously (message with payload)
+-s <size>: size in bytes of message payload
+-c <cportid>: cportid of connection to control / monitor (-1 for all cports)
+-m: display statistics about connections
