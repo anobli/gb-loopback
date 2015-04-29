@@ -44,6 +44,7 @@ int main (int argc, char *argv[])
 	int size = 0;
 	int cport = -1;
 	int monitor = 0;
+	int ms = -1;
 	struct udev *udev;
 	struct udev_enumerate *enumerate;
 	struct udev_list_entry *devices, *dev_list_entry;
@@ -51,10 +52,10 @@ int main (int argc, char *argv[])
 	char value[32];
 	const char *path;
 	const char *devtype;
-
+	const char *protocol_id;
 
 	int c;
-	while ((c = getopt (argc, argv, "t:s:c:m")) != -1) {
+	while ((c = getopt (argc, argv, "t:s:c:mw:")) != -1) {
 		switch (c) {
 		case 'c':
 			if (sscanf(optarg, "%d", &cport) != 1)
@@ -70,6 +71,10 @@ int main (int argc, char *argv[])
 			break;
 		case 'm':
 			monitor = 1;
+			break;
+		case 'w':
+			if (sscanf(optarg, "%d", &ms) != 1)
+				return -EINVAL;
 			break;
 		default:
 			return -EINVAL;
@@ -97,6 +102,10 @@ int main (int argc, char *argv[])
 		if (strcmp(devtype, "greybus_connection"))
 			continue;
 
+		protocol_id = udev_device_get_sysattr_value(dev, "protocol_id");
+		if (strcmp(protocol_id, "17"))
+			continue;
+
 		if (cport != -1 && cport != get_cportid(path))
 			continue;
 
@@ -118,6 +127,10 @@ int main (int argc, char *argv[])
 				get_cportid(path));
 		sprintf(value, "%d", type);
 		udev_device_set_sysattr_value(dev, "type", value);
+		if (ms >= 0) {
+			sprintf(value, "%d", ms);
+			udev_device_set_sysattr_value(dev, "ms_wait", value);
+		}
 	}
 	if (monitor) {
 		struct timeval ts, te, td;
@@ -132,6 +145,9 @@ int main (int argc, char *argv[])
 				devtype = udev_device_get_devtype(dev);
 
 				if (strcmp(devtype, "greybus_connection"))
+					continue;
+				protocol_id = udev_device_get_sysattr_value(dev, "protocol_id");
+				if (strcmp(protocol_id, "17"))
 					continue;
 				if (cport != -1 && cport != get_cportid(path))
 					continue;
