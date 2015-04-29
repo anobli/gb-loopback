@@ -18,6 +18,10 @@
 #include <locale.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <errno.h>
+#include <signal.h>
+#include <string.h>
+#include <sys/time.h>
 
 volatile int run = 1;
 
