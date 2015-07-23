@@ -92,6 +92,7 @@ void loopback_configure(struct loopback *loopback, struct udev_device *dev,
 	case GB_LOOPBACK_TYPE_SINK:
 		sprintf(value, "%d", size);
 		udev_device_set_sysattr_value(dev, "size", value);
+		break;
 	default:
 		type = 0;
 		if (monitor)
