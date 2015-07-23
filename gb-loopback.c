@@ -62,8 +62,8 @@ void loopback_monitor(struct loopback *loopback, struct udev_device *dev,
 	int type = loopback->type;
 
 	printf("cport %d\n", cportid);
-	printf("\tfreq = %s\n",
-		udev_device_get_sysattr_value(dev, "frequency_avg"));
+	printf("\trequests per seconds = %s\n",
+		udev_device_get_sysattr_value(dev, "requests_per_second_avg"));
 	printf("\tlatency = %s\n",
 		udev_device_get_sysattr_value(dev, "latency_avg"));
 	printf("\tbw = %s\n",
